@@ -1,0 +1,17 @@
+# Play framework
+db
+data
+tmp
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Other VCS
+.svn
+.hg
+.hgignore
+.bzr
+.bzrignore
+

@@ -1,0 +1,26 @@
+# import User
+User(testuser1):
+    name: testuser1
+    password: passw0rd
+    fullname: TestUser1
+    isAdmin: true
+
+User(testuser2):
+    name: testuser2
+    password: passw0rd
+    fullname: TestUser2
+    isAdmin: true
+
+User(testuser3):
+    name: testuser3
+    password: passw0rd
+    fullname: TestUser3
+    isAdmin: true
+    
+User(testuser4):
+    name: testuser4
+    password: passw0rd
+    fullname: TestUser4
+    isAdmin: true
+
+
