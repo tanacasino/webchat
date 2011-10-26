@@ -196,14 +196,16 @@ $('div.main-content a.send').each(function(i, element) {
         }).first().attr('id');
 
         var textarea_id = '#' + room_id + '-text';
-        var message = $(textarea_id).val();
+        var message = $(textarea_id).val().trim();
         $(textarea_id).val('');
+        if (message == "") {
+            return;
+        }
 
-        var postUrl = "@{Chat.send()}";
-        $.post(
-            postUrl,
-            {roomId: room_id.replace("room-",""), text: message}
-        ).error(function() { alert("Failed to send request."); });
+        var request = {type: "new_message",
+            text: message,
+            room: room_id.replace("room-", "")};
+        socket.send(JSON.stringify(request));
     });
 });
 

@@ -21,7 +21,6 @@ public class ChatEvent {
     }
 
     public static class Online extends Event {
-
         public Online(String username, String fullname) {
             super(username, fullname, "online");
         }
@@ -29,21 +28,66 @@ public class ChatEvent {
     }
 
     public static class Offline extends Event {
-
         public Offline(String username, String fullname) {
             super(username, fullname, "offline");
         }
     }
 
-    public static class Message extends Event {
+    public static class NewMessage extends Event {
         final public String mid;
         final public String text;
         final public String room;
 
-        public Message(String mid, String username, String fullname, String text, String room) {
+        public NewMessage(String mid, String username, String fullname, String text, String room) {
             super(username, fullname, "new_message");
             this.mid = mid;
             this.text = text;
+            this.room = room;
+        }
+    }
+
+    public static class DeleteMessage extends Event {
+        final public String mid;
+        final public String room;
+
+        public DeleteMessage(String mid, String username, String fullname, String room) {
+            super(username, fullname, "delete_message");
+            this.mid = mid;
+            this.room = room;
+        }
+    }
+
+    public static class UpdateMessage extends Event {
+        final public String mid;
+        final public String text;
+        final public String room;
+
+        public UpdateMessage(String mid, String username, String fullname, String text, String room) {
+            super(username, fullname, "update_message");
+            this.mid = mid;
+            this.text = text;
+            this.room = room;
+        }
+    }
+
+    public static class NewFile extends Event {
+        final public String fid;
+        final public String room;
+
+        public NewFile(String fid, String username, String fullname, String room) {
+            super(username, fullname, "new_file");
+            this.fid = fid;
+            this.room = room;
+        }
+    }
+
+    public static class DeleteFile extends Event {
+        final public String fid;
+        final public String room;
+
+        public DeleteFile(String fid, String username, String fullname, String room) {
+            super(username, fullname, "delete_file");
+            this.fid = fid;
             this.room = room;
         }
     }
