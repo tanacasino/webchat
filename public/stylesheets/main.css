@@ -90,18 +90,33 @@ body {
     word-wrap: break-word;
 }
 
-.chat_msg div.msg_user {
+div.chat_msg div.msg_avatar {
     float: left;
+    margin-bottom: 0px;
+    margin-left: 2px;
+    margin-right: 4px;
+    margin-top: 0px;
+}
+
+div.chat_msg div.msg_avatar img {
+    width: 24px;
+    height: 24px;
+}
+
+div.chat_msg div.msg_user {
+    float: left;
+    line-height: 24px;
     text-align: left;
     background-color:#FCDFFF;
 }
 
-.chat_msg div.msg_date {
+div.chat_msg div.msg_date {
+    line-height: 24px;
     text-align: right;
     background-color:#FCDFFF;
 }
 
-.chat_msg div.msg_text pre {
+div.chat_msg div.msg_text pre {
     font-size: 14px;
     margin-bottom: 0px;
     margin-left: 0px;
@@ -114,8 +129,8 @@ div.members ul li {
     list-style-type: none;
 }
 
-.member {
-    background-color:#FCDFFF;
-    float: left;
-    text-align: left;
+div.members img.member_avatar {
+    width: 40px;
+    height: 40px;
 }
+

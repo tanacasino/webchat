@@ -43,7 +43,6 @@
             <p>アイコン変更できるよね</p>
             <p>名前を変更できるよね</p>
         </div>
-
         #{list items:rooms, as:'room' }
         <div class="main-content" id="room-${room.id}">
             <div class="span10">
@@ -59,8 +58,9 @@
                 <div id="messages-room-${room.id}">
                     #{list items:room.messages, as:'message' }
                     <div id="message-id-${message.id}" class="chat_msg">
-                        <div class="msg_user">${message.who.name} (${message.who.fullname})</div>
-                        <div class="msg_date">${message.sentAt}</div>
+                        <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
+                        <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
+                        <div class="msg_date"><span>${message.sentAt}</span></div>
                         <div class="msg_text"><pre>${message.message}</pre></div>
                     </div>
                     #{/list}
@@ -72,12 +72,7 @@
                 <div class="row">
                     #{list items:room.members, as:'member' }
                     <div class="span3">
-                        #{if member.avatar.exists()}
-                            <a href="@{Users.avatar(member.name)}" target="_blank"><img src="@{Users.avatar(member.name)}" width="40" height="40" alt="${member.fullname}" title="${member.fullname}"></a>
-                        #{/if}
-                        #{else}
-                            <img src="@{'/public/images/icons/user.png'}" width="40" height="40">
-                        #{/else}
+                        <img class="member_avatar" src="@{Users.avatar(member.name)}">
                         ${member.name}
                     </div>
                     #{/list}
@@ -107,8 +102,9 @@
 <script id="chatMessageTemplate" type="text/x-jquery-tmpl">
 <!-- チャットメッセージのテンプレート -->
 <div id="message-id-{{= mid}}" class="chat_msg" style="display: none;">
-    <div class="msg_user">{{= name}}</div>
-    <div class="msg_date">{{= date}}</div>
+    <div class="msg_avatar"><img src="@{Users.avatar()}?username={{= name}}"></div>
+    <div class="msg_user"><span>{{= name}} ({{= fullname}})</span></div>
+    <div class="msg_date"><span>{{= date}}</span></div>
     <div class="msg_text"><pre>{{= text}}</pre></div>
 </div>
 </script>
@@ -147,7 +143,8 @@ socket.onmessage = function(event) {
         var text = $('<div>').text(json.text).html(); // escape html
         var msg = {
             mid: json.mid,
-            name: json.username + " (" + json.fullname + ")",
+            name: json.username,
+            fullname: json.fullname,
             text: text,
             date: datestring
         };
