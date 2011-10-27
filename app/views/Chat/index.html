@@ -73,7 +73,7 @@
                     #{list items:room.members, as:'member' }
                     <div class="span3">
                         #{if member.avatar.exists()}
-                            <a href="@{Users.userPhoto(member.id)}" target="_blank"><img src="@{Users.userPhoto(member.id)}" width="40" height="40" alt="${member.fullname}" title="${member.fullname}"></a>
+                            <a href="@{Users.avatar(member.name)}" target="_blank"><img src="@{Users.avatar(member.name)}" width="40" height="40" alt="${member.fullname}" title="${member.fullname}"></a>
                         #{/if}
                         #{else}
                             <img src="@{'/public/images/icons/user.png'}" width="40" height="40">
