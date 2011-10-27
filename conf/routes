@@ -9,10 +9,8 @@
 *      /admin                                   module:crud
 
 # Home page
-#GET     /                                       Application.index
 GET     /                                       Chat.index
 WS      /ws                                     Chat.WebSocket.connect
-POST    /message/send                           Chat.send
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
