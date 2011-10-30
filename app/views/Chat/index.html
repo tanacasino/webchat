@@ -65,6 +65,7 @@
                     </div>
                     #{/list}
                 </div>
+                <a class="btn read-more-messages">Read More</a>
             </div>
 
             <div class="span6 members">
@@ -220,6 +221,44 @@ $('div.main-content textarea.new_message').each(function(i, element) {
 $('#request_permission').click(function() {
     window.webkitNotifications.requestPermission();
 });
+
+
+// Read More
+$('div.main-content a.read-more-messages').each(function(i, element) {
+    $(this).bind('click', function(e) {
+        // 現在表示しているコンテンツのRoomのidを取得する
+        var mainContents = $('#main-container div.main-content');
+        var room_id = mainContents.filter(function(index) {
+            return $(this).css('display') == 'block';
+        }).first().attr('id').replace("room-", "");
+        // 一番古いメッセージのIDを取得する
+        var lastMessageId = $("#messages-room-" + room_id + " .chat_msg:last").attr('id').replace("message-id-", "");
+        // サーバからメッセージを取得する
+        var readMoreUrl = "@@{RoomMessages.fetch()}";
+        readMoreUrl +=  + "?message=" + lastMessageId + "&room=" + room_id;
+        $.getJSON(readMoreUrl, function(data) {
+            // TODO 以下の処理はWebSocketのメッセージ受信とまとめることができるはずなので関数化すべき.
+            var df = new DateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            var d = new Date();
+            $.each(data, function(key, val) {
+                d.setTime(val.timestamp);
+                var datestring = df.format(d);
+                var text = $('<div>').text(val.message).html(); // escape html
+                var msg = {
+                    mid: val.id,
+                    name: val.username,
+                    text: val.message,
+                    fullname: val.fullname,
+                    date: datestring
+                };
+                $("#chatMessageTemplate").tmpl(msg).appendTo("#messages-room-" + room_id);
+                $("#message-id-" + msg.mid).fadeIn(1500);
+            });
+        });
+    })
+});
+
+
 
 </script>
 

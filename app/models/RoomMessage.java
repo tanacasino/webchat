@@ -47,4 +47,8 @@ public class RoomMessage extends Model {
         return RoomMessage.find("room = ? order by id desc", room).fetch(size);
     }
 
+    public static List<RoomMessage> findOldMessagesById(Long lastMessageId, Room room, int size) {
+        return RoomMessage.find("room = ? and id < ? order by id desc", room, lastMessageId).fetch(size);
+    }
+
 }

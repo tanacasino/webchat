@@ -11,6 +11,7 @@
 # Home page
 GET     /                                       Chat.index
 WS      /ws                                     Chat.WebSocket.connect
+GET     /message/fetch                          RoomMessages.fetch
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
