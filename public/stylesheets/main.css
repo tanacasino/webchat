@@ -69,60 +69,88 @@ body {
 }
 
 .chat_msg {
-    margin-bottom: 5px;
-    background-color: whiteSmoke;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-top-style: solid;
-    border-right-style: solid;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-top-color: rgba(0, 0, 0, 0.148438);
-    border-right-color: rgba(0, 0, 0, 0.148438);
-    border-bottom-color: rgba(0, 0, 0, 0.148438);
-    border-left-color: rgba(0, 0, 0, 0.148438);
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    word-wrap: break-word;
+    margin-bottom: 0px;
 }
 
 div.chat_msg div.msg_avatar {
-    float: left;
     margin-bottom: 0px;
-    margin-left: 2px;
-    margin-right: 4px;
     margin-top: 0px;
 }
 
 div.chat_msg div.msg_avatar img {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0px;
+    margin-left: 6px;
+    margin-right: 0px;
+    margin-top: 0px;
+}
+
+div.chat_msg div.msg_body {
+    border-top-width:    2px;
+    border-right-width:  2px;
+    border-bottom-width: 2px;
+    border-left-width:   2px;
+
+    border-top-style:    solid;
+    border-right-style:  solid;
+    border-bottom-style: solid;
+    border-left-style:   solid;
+
+    border-top-color:    lightgray;
+    border-right-color:  lightgray;
+    border-bottom-color: lightgray;
+    border-left-color:   lightgray;
+
+    -webkit-border-top-left-radius:     3px;
+    -moz-border-radius-topleft:         3px;
+    -webkit-border-top-right-radius:    3px;
+    -moz-border-radius-topright:        3px;
+    -webkit-border-bottom-right-radius: 3px;
+    -moz-border-radius-bottomright:     3px;
+    -webkit-border-bottom-left-radius:  3px;
+    -moz-border-radius-bottomleft:      3px;
+
+    margin-top:    -6px;
+    margin-bottom: 0px;
+    margin-left:   0px;
+    margin-right:  0px;
+}
+
+div.chat_msg div.arrow {
+    border-top: solid 10px lightgray;
+    border-bottom: 0;
+    border-left: solid 10px transparent;
+    border-right: solid 0;
+    width: 0;
+    height: 0;
+
+    position: relative;
+    top: 23px;
+    left: -10px;
 }
 
 div.chat_msg div.msg_user {
     float: left;
-    line-height: 24px;
+    font-size: 13px;
     text-align: left;
     background-color:#FCDFFF;
+    padding: 2px;
 }
 
 div.chat_msg div.msg_date {
-    line-height: 24px;
+    font-size: 13px;
     text-align: right;
     background-color:#FCDFFF;
 }
 
 div.chat_msg div.msg_text pre {
-    font-size: 14px;
+    font-size: 13px;
+    border: 0;
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
     margin-top: 0px;
-    border: 1;
 }
 
 div.members ul li {

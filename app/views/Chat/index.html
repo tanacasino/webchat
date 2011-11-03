@@ -57,14 +57,24 @@
                 <br />
                 <div id="messages-room-${room.id}">
                     #{list items:room.messages, as:'message' }
-                    <div id="message-id-${message.id}" class="chat_msg">
-                        <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
-                        <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
-                        <div class="msg_date"><span>${message.sentAt}</span></div>
-                        <div class="msg_text"><pre>${message.message}</pre></div>
+                    <div id="message-id-${message.id}" class="chat_msg row">
+                        <div class="msg_container row">
+                            <div class="span1">
+                                <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
+                            </div>
+                            <div class="span9">
+                                <div class="arrow"></div>
+                                <div class="msg_body">
+                                    <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
+                                    <div class="msg_date"><span>${message.sentAt}</span></div>
+                                    <div class="msg_text"><pre>${message.message}</pre></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     #{/list}
                 </div>
+                <hr />
                 <a class="btn read-more-messages">Read More</a>
             </div>
 
@@ -102,11 +112,20 @@
 
 <script id="chatMessageTemplate" type="text/x-jquery-tmpl">
 <!-- チャットメッセージのテンプレート -->
-<div id="message-id-{{= mid}}" class="chat_msg" style="display: none;">
-    <div class="msg_avatar"><img src="@{Users.avatar()}?username={{= name}}"></div>
-    <div class="msg_user"><span>{{= name}} ({{= fullname}})</span></div>
-    <div class="msg_date"><span>{{= date}}</span></div>
-    <div class="msg_text"><pre>{{= text}}</pre></div>
+<div id="message-id-{{= mid}}" class="chat_msg row" style="display: none;">
+    <div class="msg_container row">
+        <div class="span1">
+            <div class="msg_avatar"><img src="@{Users.avatar()}?username={{= name}}"></div>
+        </div>
+        <div class="span9">
+            <div class="arrow"></div>
+            <div class="msg_body">
+                <div class="msg_user"><span>{{= name}} ({{= fullname}})</span></div>
+                <div class="msg_date"><span>{{= date}}</span></div>
+                <div class="msg_text"><pre>{{= text}}</pre></div>
+            </div>
+        </div>
+    </div>
 </div>
 </script>
 
