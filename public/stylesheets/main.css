@@ -133,9 +133,9 @@ div.chat_msg div.arrow {
 div.chat_msg div.msg_user {
     float: left;
     font-size: 13px;
+    font-weight: bold;
     text-align: left;
     background-color:#FCDFFF;
-    padding: 2px;
 }
 
 div.chat_msg div.msg_date {
