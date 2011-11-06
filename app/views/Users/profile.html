@@ -1,0 +1,42 @@
+#{extends 'main.html' /}
+#{set title:'Profile' /}
+#{set 'moreScripts'}
+    #{script 'dateformat.js' /}
+#{/set}
+
+<div class="content">
+    <div id="main-container" class="row">
+        <div class="main-content" id="home">
+            <h1>Profile</h1>
+            <p>You are ${user.name}</p>
+            <hr />
+            <h3>Enable Desktop Notification</h3>
+            <a id="request_permission" class="btn">Enable Desktop Notification</a>
+            <hr />
+            <div id="update_form">
+                #{ifErrors}
+                    <h1>Oops...</h1>
+                    #{errors}
+                        <li>${error}</li>
+                    #{/errors}
+                #{/ifErrors}
+                <div id="update_avatar">
+                    <h3>Change Avatar</h3>
+                    <img class="member_avatar" src="@{Users.avatar(user.name)}" height="48" width="48">
+                    #{form @Users.updateAvatar(), enctype:'multipart/form-data'}
+                        <input type="file" name="avatar" />
+                        <br />
+                        <input class="btn" type="submit" name="submit" value="Update" />
+                    #{/form}
+                </div>
+            </div>
+            <hr />
+            <h3>TODO</h3>
+            <ul>
+                <li>名前変更</li>
+                <li>パスワード変更</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
