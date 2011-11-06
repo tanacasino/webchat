@@ -1,3 +1,4 @@
+
 package models;
 
 import java.util.Date;
@@ -6,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.jamonapi.utils.FileUtils;
+
+import play.Logger;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
@@ -41,4 +45,9 @@ public class RoomFile extends Model {
     public String toString() {
         return "id: " + id + ", name: " + name + ", room: " + room.id + ", owner: " + owner + ", uploadedAt: " + uploadedAt;
     }
+
+    public String getReadableSize() {
+        return utilities.FileUtils.getReadableSize(size);
+    }
+
 }

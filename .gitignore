@@ -1,6 +1,7 @@
 # Play framework
 db
 data
+test-result
 tmp
 
 # Eclipse

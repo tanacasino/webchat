@@ -12,6 +12,9 @@ import play.data.Upload;
 import play.db.jpa.Blob;
 import play.db.jpa.JPABase;
 import play.mvc.With;
+import websocket.ChatEvent.DeleteFile;
+import websocket.ChatEvent.NewFile;
+import websocket.WebSocketEventStreamManager;
 
 @With(Security.class)
 public class RoomFiles extends CRUD {
@@ -59,6 +62,23 @@ public class RoomFiles extends CRUD {
         }
         response.setContentTypeIfNotSet(file.file.type());
         renderBinary(file.file.get(), file.name, file.file.length());
+    }
+
+    public static void rm(Long id) {
+        if (id == null || id <1) {
+            badRequest();
+        }
+        RoomFile file = RoomFile.findById(id);
+        notFoundIfNull(file);
+        String username = Security.connected();
+        User user = User.findByName(username);
+        if (!file.room.members.contains(user)) {
+            forbidden();
+        }
+        file.delete();
+        DeleteFile event = new DeleteFile(file.id.toString(), username, user.fullname, file.room.id.toString());
+        WebSocketEventStreamManager.send(event, user, file.room);
+        Chat.index();
     }
 
 }

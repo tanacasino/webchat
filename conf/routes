@@ -12,6 +12,10 @@
 GET     /                                       Chat.index
 WS      /ws                                     Chat.WebSocket.connect
 GET     /message/fetch                          RoomMessages.fetch
+GET     /users/profile                          Users.profile
+POST    /users/update/fullname                  Users.updateFullname
+POST    /users/update/avatar                    Users.updateAvatar
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

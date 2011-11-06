@@ -78,6 +78,10 @@ public class WebSocketEventStreamManager {
         Logger.info("sendMessage called.");
         NewMessage event = new NewMessage(mid, user.name, user.fullname, text, room.id.toString());
         // ルームのメンバーにのみ送信する.
+        send(event, user, room);
+    }
+
+    public static void send(ChatEvent.Event event, User user, Room room) {
         synchronized (eventStreamsMap) {
             for (User member : room.members) {
                 if (eventStreamsMap.containsKey(member.name)) {

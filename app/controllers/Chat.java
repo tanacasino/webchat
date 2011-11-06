@@ -71,7 +71,7 @@ public class Chat extends Controller {
         for (Room room : joinedRooms) {
             List<RoomMessage> messages = RoomMessage.getRecentMessage(room, 20);
             List<User> memberList = new ArrayList<User>((room.members));
-            List<RoomFile> roomFiles = RoomFile.find("byRoom", room).fetch();
+            List<RoomFile> roomFiles = RoomFile.find("room = ?  order by id desc", room).fetch();
             RoomInfo info = new RoomInfo(room.id, room.name, room.owner.name, messages, memberList, roomFiles, room.icon);
             rooms.add(info);
         }
@@ -177,6 +177,10 @@ public class Chat extends Controller {
                     outbound.send(toJson(message));
                 }
 
+                // DeleteFileEvent
+                for (ChatEvent.DeleteFile deleteFile : ClassOf(ChatEvent.DeleteFile.class).match(e._2)) {
+                    outbound.send(toJson(deleteFile));
+                }
             }
         }
 

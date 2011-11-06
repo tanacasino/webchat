@@ -2,20 +2,16 @@
 #{set title:'Home' /}
 #{set 'moreScripts'}
     #{script 'jquery.tmpl.min.js' /}
+    #{script 'jquery.tablesorter.min.js' /}
     #{script 'dateformat.js' /}
-    #{script 'webchat.js' /}
     #{script 'badger.min.js' /}
+    #{script 'webchat.js' /}
 #{/set}
 
 <div class="content">
     <div class="page-header">
-        <!--
-        main-containerに表示する内容を選択するメニュー
-        特に意味はないが全部アイコンにしてしまった
-        -->
         <div id="contents-tabs">
             <ul id="tab-navigation">
-                <li><a href="#home"><img src="@{'/public/images/icons/user.png'}" width="40" height="40" alt="Profile" title="Profile"></a></li>
                 #{list items:rooms, as:'room' }
                     <li>
                         #{if room.icon.exists()}
@@ -31,18 +27,6 @@
     </div>
 
     <div id="main-container" class="row">
-        <!--
-        タブで選択した内容を描画する部分
-        初期表示はアカウント情報画面(これはユーザが設定可能であるべきだと思う)
-        -->
-        <div class="main-content" id="home">
-            <h2>アカウント設定画面</h2>
-            <a id="request_permission" class="btn">デスクトップ通知をONにするボタンですよ</a>
-            <h3>ここででは下記のことができないと納得いきません</h3>
-            <p>パスワード変更できるよね</p>
-            <p>アイコン変更できるよね</p>
-            <p>名前を変更できるよね</p>
-        </div>
         #{list items:rooms, as:'room' }
         <div class="main-content" id="room-${room.id}">
             <div class="span10">
@@ -94,15 +78,33 @@
                 <div id="room-${room.id}-upload">
                     #{form @RoomFiles.upload(room.id), enctype:'multipart/form-data'}
                     <input type="file" name="upload">
-                    <input type="submit" value="Upload">
+                    <input class="btn" type="submit" value="Upload">
                     #{/form}
                 </div>
                 <div id="room-${room.id}-files">
-                    <ul>
-                    #{list items:room.files, as:'file' }
-                        <li><a href="@{RoomFiles.download(file.id)}" target="_blank">${file.name}</a>
-                    #{/list}
-                    </ul>
+                    <table class="room-files">
+                        <thead>
+                            <tr>
+                                <th>name</th>
+                                <th>date</th>
+                                <th>size</th>
+                                <th>action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            #{list items:room.files, as:'file' }
+                            <tr id="file-id-${file.id}">
+                                <th>${file.name}</th>
+                                <th>${file.uploadedAt}</th>
+                                <th>${file.getReadableSize()}</th>
+                                <th>
+                                    <a href="@{RoomFiles.download(file.id)}" target="_blank"><img src="@{'/public/images/icons/arrow-down.png'}" width="15" height="15" title="download" /></a>
+                                    <a href="@{RoomFiles.rm(file.id)}"><img src="@{'/public/images/icons/trash.png'}" width="15" height="15" title="delete" /></a>
+                                </th>
+                            </tr>
+                            #{/list}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -135,6 +137,7 @@
    webchat.jsに分離できるところは分離すべき
    また使いまわせそうな箇所は関数に切り出すべき
    コード読みづらい。ありえない。
+   でも直すより最低限できることを増やしたい
  */
 // Create Web Socket.
 var WebSocket
@@ -177,7 +180,7 @@ socket.onmessage = function(event) {
         // notification
         if ("${user.name}" != json.username) { // 自分のメッセージは通知しない.
             if (window.webkitNotifications.checkPermission() == 0) {
-                var icon = "@{'/public/images/icons/user.png'}"; // ユーザ毎にアイコン設定したいのに。。。
+                var icon = "@{Users.avatar()}?username=" + json.username;
                 var room_name = $('#room-name-' + room_id).text();
                 var title = '@' + json.username + " : " + room_name;
                 var message = json.text;
@@ -277,7 +280,13 @@ $('div.main-content a.read-more-messages').each(function(i, element) {
     })
 });
 
-
+// table sorter
+$(function() {
+    // $(".room-files").tablesorter({ sortList: [[1,0]] });
+    $(".room-files").tablesorter();
+    //$(".room-files table").tablesorter();
+    //$("table").tablesorter();
+});
 
 </script>
 
