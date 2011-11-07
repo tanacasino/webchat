@@ -101,7 +101,7 @@ webchat.Chat.prototype.setupSendShortcut = function() {
     $('div.main-content textarea.new_message').each(function(i, element) {
         $(this).bind('keypress', function(e) {
             if((e.charCode == 13 || e.keyCode == 13) && e.shiftKey) {
-                $('#sendsendsend').click(); // FIXME this is wrong.
+                $('div.main-content a.send:first').click();
                 e.preventDefault()
             }
         })
@@ -112,14 +112,12 @@ webchat.Chat.prototype.setupSendShortcut = function() {
 webchat.Chat.prototype.setupReadMore = function(readMoreURL) {
     $('div.main-content a.read-more-messages').each(function(i, element) {
         $(this).bind('click', function(e) {
-            // 現在表示しているコンテンツのRoomのidを取得する
-            var mainContents = $('#main-container div.main-content');
-            var room_id = mainContents.filter(function(index) {
+            // Find room id.
+            var room_id = $('#main-container div.main-content').filter(function(index) {
                 return $(this).css('display') == 'block';
             }).first().attr('id').replace("room-", "");
-            // 一番古いメッセージのIDを取得する
+            // Find last message id.
             var lastMessageId = $("#messages-room-" + room_id + " .chat_msg:last").attr('id').replace("message-id-", "");
-            // サーバからメッセージを取得する
             var url = readMoreURL + "?message=" + lastMessageId + "&room=" + room_id;
             $.getJSON(url, function(data) {
                 $.each(data, function(key, val) {
