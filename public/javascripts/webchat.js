@@ -73,19 +73,15 @@ webchat.Chat.prototype.setupSendMessage = function(ws) {
     // Send Message
     $('div.main-content a.send').each(function(i, element) {
         $(this).bind('click', function(e) {
-            var mainContents = $('#main-container div.main-content');
-            // 現在表示しているコンテンツのRoomのidを取得する
-            var room_id = mainContents.filter(function(index) {
+            var room_id = $('#main-container div.main-content').filter(function(index) {
                 return $(this).css('display') == 'block';
             }).first().attr('id');
-
             var textarea_id = '#' + room_id + '-text';
             var message = $(textarea_id).val().trim();
             $(textarea_id).val('');
             if (message == "") {
                 return;
             }
-
             var request = {
                 type: "new_message",
                 text: message,
