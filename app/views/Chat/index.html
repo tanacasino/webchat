@@ -132,160 +132,30 @@
 </script>
 
 <script type="text/javascript">
-/*
-   HTMLにJavaScript書きすぎ
-   webchat.jsに分離できるところは分離すべき
-   また使いまわせそうな箇所は関数に切り出すべき
-   コード読みづらい。ありえない。
-   でも直すより最低限できることを増やしたい
- */
-// Create Web Socket.
+// WebSocket
 var WebSocket
 if (!WebSocket) {
     WebSocket = MozWebSocket
 }
-var socket = new WebSocket('@@{Chat.WebSocket.connect()}');
-
-// Message received on the socket
-socket.onmessage = function(event) {
-    //var json = $.parseJSON(event.data); // 動きません！PlayかChromeのせいですが解析する気力がありません.
-    /*
-       FIXME 意味不明だけどこうしないと動かないぽん
-       受信したデータがおかしいぽん
-       後ろのゴミデータを削除した文字列にするぽん
-     */
-    var edata = event.data;
-    var lastIndex = edata.lastIndexOf("}");
-    var json = $.parseJSON(edata.substr(0, lastIndex + 1));
-
-    if (json.type == 'new_message') {
-        var df = new DateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        var d = new Date;
-        d.setTime(json.timestamp);
-        var datestring = df.format(d);
-        var text = $('<div>').text(json.text).html(); // escape html
-        var msg = {
-            mid: json.mid,
-            name: json.username,
-            fullname: json.fullname,
-            text: text,
-            date: datestring
-        };
-        var room_id = json.room;
-
-        // $("#chatMessageTemplate").tmpl(msg).appendTo("#messages-room-" + room_id); // 下に追加
-        $("#chatMessageTemplate").tmpl(msg).prependTo("#messages-room-" + room_id); // 上に追加
-        $("#message-id-" + json.mid).fadeIn(1500);
-
-        // notification
-        if ("${user.name}" != json.username) { // 自分のメッセージは通知しない.
-            if (window.webkitNotifications.checkPermission() == 0) {
-                var icon = "@{Users.avatar()}?username=" + json.username;
-                var room_name = $('#room-name-' + room_id).text();
-                var title = '@' + json.username + " : " + room_name;
-                var message = json.text;
-                var notification = window.webkitNotifications.createNotification(icon, title, message);
-                notification.ondisplay = function() {
-                    setTimeout(function() {
-                        notification.cancel();
-                    }, 5000);
-                };
-                notification.show();
-            }
-        }
-    } else if (json.type == 'online') {
-        // TODO eventビューみたいなのいる？？？
-    } else if (json.type == 'offline') {
-        // TODO eventビューみたいなのいる？？？
-    }
-    // TODO 新規メッセージ以外も対応すること
-    // 削除 delete_message
-    // 更新 update_message
-    // TODO ファイルの新着も対応すること
-    // 新規 new_file
-    // 削除 delete_file
+if (!WebSocket) {
+    alert("Sorry, Not supported WebBrowser");
 }
 
-// Send Message
-$('div.main-content a.send').each(function(i, element) {
-    $(this).bind('click', function(e) {
-        var mainContents = $('#main-container div.main-content');
-        // 現在表示しているコンテンツのRoomのidを取得する
-        var room_id = mainContents.filter(function(index) {
-            return $(this).css('display') == 'block';
-        }).first().attr('id');
+var chat = new webchat.Chat();
+var websocketURL = "@@{Chat.WebSocket.connect()}";
+var avatarURL = "@{Users.avatar()}?username="
+var readMoreURL = "@@{RoomMessages.fetch()}";
 
-        var textarea_id = '#' + room_id + '-text';
-        var message = $(textarea_id).val().trim();
-        $(textarea_id).val('');
-        if (message == "") {
-            return;
-        }
+var socket = chat.connectWebSocket(websocketURL, avatarURL);
 
-        var request = {type: "new_message",
-            text: message,
-            room: room_id.replace("room-", "")};
-        socket.send(JSON.stringify(request));
-    });
-});
+$(function () {
+    chat.createTabMenu();
+    chat.setupSendMessage(socket);
+    chat.setupSendShortcut();
+    chat.setupReadMore(readMoreURL);
 
-// Shift + Enter
-$('div.main-content textarea.new_message').each(function(i, element) {
-    $(this).bind('keypress', function(e) {
-        if((e.charCode == 13 || e.keyCode == 13) && e.shiftKey) {
-            $('#sendsendsend').click()
-            e.preventDefault()
-        }
-    })
-});
-
-// Desktop Notification Button
-$('#request_permission').click(function() {
-    window.webkitNotifications.requestPermission();
-});
-
-
-// Read More
-$('div.main-content a.read-more-messages').each(function(i, element) {
-    $(this).bind('click', function(e) {
-        // 現在表示しているコンテンツのRoomのidを取得する
-        var mainContents = $('#main-container div.main-content');
-        var room_id = mainContents.filter(function(index) {
-            return $(this).css('display') == 'block';
-        }).first().attr('id').replace("room-", "");
-        // 一番古いメッセージのIDを取得する
-        var lastMessageId = $("#messages-room-" + room_id + " .chat_msg:last").attr('id').replace("message-id-", "");
-        // サーバからメッセージを取得する
-        var readMoreUrl = "@@{RoomMessages.fetch()}";
-        readMoreUrl += "?message=" + lastMessageId + "&room=" + room_id;
-        $.getJSON(readMoreUrl, function(data) {
-            // TODO 以下の処理はWebSocketのメッセージ受信とまとめることができるはずなので関数化すべき.
-            var df = new DateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            var d = new Date();
-            $.each(data, function(key, val) {
-                d.setTime(val.timestamp);
-                var datestring = df.format(d);
-                var text = $('<div>').text(val.message).html(); // escape html
-                var msg = {
-                    mid: val.id,
-                    name: val.username,
-                    text: val.message,
-                    fullname: val.fullname,
-                    date: datestring
-                };
-                $("#chatMessageTemplate").tmpl(msg).appendTo("#messages-room-" + room_id);
-                $("#message-id-" + msg.mid).fadeIn(1500);
-            });
-        });
-    })
-});
-
-// table sorter
-$(function() {
-    // $(".room-files").tablesorter({ sortList: [[1,0]] });
+    // Create sortable table for RoomFiles.
     $(".room-files").tablesorter();
-    //$(".room-files table").tablesorter();
-    //$("table").tablesorter();
 });
 
 </script>
