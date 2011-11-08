@@ -19,7 +19,7 @@ webchat.formatDate = function(timestamp) {
 /** Classes **/
 webchat.Chat = function() {};
 
-webchat.Chat.prototype.connectWebSocket = function(websocketURL, avatarURL) {
+webchat.Chat.prototype.connectWebSocket = function(username, websocketURL, avatarURL) {
     var socket = new WebSocket(websocketURL);
     socket.onmessage = function(event) {
         var json = $.parseJSON(event.data);
@@ -37,7 +37,7 @@ webchat.Chat.prototype.connectWebSocket = function(websocketURL, avatarURL) {
             $("#chatMessageTemplate").tmpl(msg).prependTo("#messages-room-" + room_id);
             $("#message-id-" + json.mid).fadeIn(1500);
             // Notification
-            if ("${user.name}" != json.username) { // Owned message.
+            if (username != json.username) { // Owned message.
                 if (window.webkitNotifications.checkPermission() == 0) {
                     var icon = avatarURL + json.username;
                     var room_name = $('#room-name-' + room_id).text();

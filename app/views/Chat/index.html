@@ -31,11 +31,12 @@
         <div class="main-content" id="room-${room.id}">
             <div class="span10">
                 <h2 id="room-name-${room.id}">${room.name}</h2>
+                <p>Owner: ${room.owner}</p>
+                <hr />
                 <div class="new_message_area">
                     <div class="send_message">
                         <textarea id="room-${room.id}-text" class="new_message xxlarge" placeholder="Write New Message Here! Shift+Enter" rows="3"></textarea><br />
-                        <!-- このidはふざけすぎ -->
-                        <a id="sendsendsend" class="send btn success" href="#">Send</a>
+                        <a class="send btn success" href="#">Send</a>
                     </div>
                 </div>
                 <br />
@@ -142,18 +143,17 @@ if (!WebSocket) {
 }
 
 var chat = new webchat.Chat();
+var username = "${user.name}";
 var websocketURL = "@@{Chat.WebSocket.connect()}";
 var avatarURL = "@{Users.avatar()}?username="
 var readMoreURL = "@@{RoomMessages.fetch()}";
 
-var socket = chat.connectWebSocket(websocketURL, avatarURL);
-
 $(function () {
+    var socket = chat.connectWebSocket(username, websocketURL, avatarURL);
     chat.createTabMenu();
     chat.setupSendMessage(socket);
     chat.setupSendShortcut();
     chat.setupReadMore(readMoreURL);
-
     // Create sortable table for RoomFiles.
     $(".room-files").tablesorter();
 });
