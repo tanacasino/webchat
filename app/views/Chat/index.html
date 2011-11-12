@@ -26,86 +26,88 @@
         </div>
     </div>
 
-    <div id="main-container" class="row">
+    <div id="main-container">
         #{list items:rooms, as:'room' }
         <div class="main-content" id="room-${room.id}">
-            <div class="span10">
-                <h2 id="room-name-${room.id}">${room.name}</h2>
-                <p>Owner: ${room.owner}</p>
-                <hr />
-                <div class="new_message_area">
-                    <div class="send_message">
-                        <textarea id="room-${room.id}-text" class="new_message xxlarge" placeholder="Write New Message Here! Shift+Enter" rows="3"></textarea><br />
-                        <a class="send btn success" href="#">Send</a>
+            <div class="row">
+                <div class="span10">
+                    <h2 id="room-name-${room.id}">${room.name}</h2>
+                    <p>Owner: ${room.owner}</p>
+                    <hr />
+                    <div class="new_message_area">
+                        <div class="send_message">
+                            <textarea id="room-${room.id}-text" class="new_message xxlarge" placeholder="Write New Message Here! Shift+Enter" rows="3"></textarea><br />
+                            <a class="send btn success" href="#">Send</a>
+                        </div>
                     </div>
-                </div>
-                <br />
-                <div id="messages-room-${room.id}">
-                    #{list items:room.messages, as:'message' }
-                    <div id="message-id-${message.id}" class="chat_msg row">
-                        <div class="msg_container row">
-                            <div class="span1">
-                                <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
-                            </div>
-                            <div class="span9">
-                                <div class="arrow"></div>
-                                <div class="msg_body">
-                                    <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
-                                    <div class="msg_date"><span>${message.sentAt}</span></div>
-                                    <div class="msg_text"><pre>${message.message}</pre></div>
+                    <br />
+                    <div id="messages-room-${room.id}">
+                        #{list items:room.messages, as:'message' }
+                        <div id="message-id-${message.id}" class="chat_msg row">
+                            <div class="msg_container row">
+                                <div class="span1">
+                                    <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
+                                </div>
+                                <div class="span9">
+                                    <div class="arrow"></div>
+                                    <div class="msg_body">
+                                        <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
+                                        <div class="msg_date"><span>${message.sentAt}</span></div>
+                                        <div class="msg_text"><pre>${message.message}</pre></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        #{/list}
                     </div>
-                    #{/list}
+                    <hr />
+                    <a class="btn read-more-messages">Read More</a>
                 </div>
-                <hr />
-                <a class="btn read-more-messages">Read More</a>
-            </div>
 
-            <div class="span6 members">
-                <h3>Members</h3>
-                <div class="row">
-                    #{list items:room.members, as:'member' }
-                    <div class="span3">
-                        <img class="member_avatar" src="@{Users.avatar(member.name)}">
-                        ${member.name}
+                <div class="span6 members">
+                    <h3>Members</h3>
+                    <div class="row">
+                        #{list items:room.members, as:'member' }
+                        <div class="span3">
+                            <img class="member_avatar" src="@{Users.avatar(member.name)}">
+                            ${member.name}
+                        </div>
+                        #{/list}
                     </div>
-                    #{/list}
                 </div>
-            </div>
-            <div class="span6">
-                <h3>Files</h3>
-                <div id="room-${room.id}-upload">
-                    #{form @RoomFiles.upload(room.id), enctype:'multipart/form-data'}
-                    <input type="file" name="upload">
-                    <input class="btn" type="submit" value="Upload">
-                    #{/form}
-                </div>
-                <div id="room-${room.id}-files">
-                    <table class="room-files">
-                        <thead>
-                            <tr>
-                                <th>name</th>
-                                <th>date</th>
-                                <th>size</th>
-                                <th>action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            #{list items:room.files, as:'file' }
-                            <tr id="file-id-${file.id}">
-                                <th>${file.name}</th>
-                                <th>${file.uploadedAt}</th>
-                                <th>${file.getReadableSize()}</th>
-                                <th>
-                                    <a href="@{RoomFiles.download(file.id)}" target="_blank"><img src="@{'/public/images/icons/arrow-down.png'}" width="15" height="15" title="download" /></a>
-                                    <a href="@{RoomFiles.rm(file.id)}"><img src="@{'/public/images/icons/trash.png'}" width="15" height="15" title="delete" /></a>
-                                </th>
-                            </tr>
-                            #{/list}
-                        </tbody>
-                    </table>
+                <div class="span6">
+                    <h3>Files</h3>
+                    <div id="room-${room.id}-upload">
+                        #{form @RoomFiles.upload(room.id), enctype:'multipart/form-data'}
+                        <input type="file" name="upload">
+                        <input class="btn" type="submit" value="Upload">
+                        #{/form}
+                    </div>
+                    <div id="room-${room.id}-files">
+                        <table class="room-files zebra-striped">
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>date</th>
+                                    <th>size</th>
+                                    <th>action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                #{list items:room.files, as:'file' }
+                                <tr id="file-id-${file.id}">
+                                    <th>${file.name}</th>
+                                    <th>${file.uploadedAt}</th>
+                                    <th>${file.getReadableSize()}</th>
+                                    <th>
+                                        <a href="@{RoomFiles.download(file.id)}" target="_blank"><img src="@{'/public/images/icons/arrow-down.png'}" width="15" height="15" title="download" /></a>
+                                        <a href="@{RoomFiles.rm(file.id)}"><img src="@{'/public/images/icons/trash.png'}" width="15" height="15" title="delete" /></a>
+                                    </th>
+                                </tr>
+                                #{/list}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
