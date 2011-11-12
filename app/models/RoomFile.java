@@ -2,6 +2,7 @@
 package models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -45,9 +46,12 @@ public class RoomFile extends Model {
     public String toString() {
         return "id: " + id + ", name: " + name + ", room: " + room.id + ", owner: " + owner + ", uploadedAt: " + uploadedAt;
     }
-
     public String getReadableSize() {
         return utilities.FileUtils.getReadableSize(size);
+    }
+
+    public static List<RoomFile> findRoomFilesByRoom(Room room) {
+        return RoomFile.find("room = ?  order by id desc", room).fetch();
     }
 
 }
