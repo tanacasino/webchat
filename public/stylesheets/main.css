@@ -211,6 +211,9 @@ div.chat_msg div.msg_text pre {
     margin-top: 0px;
 }
 
+div.members div.span3 {
+    min-height: 50px;
+}
 div.members ul li {
     list-style-type: none;
 }
@@ -223,5 +226,17 @@ div.members img.member_avatar {
 /* files table */
 table.room-files thead tr th {
     background: #e6e6fa;
+}
+
+table.room-files thead tr th.file-name {
+    width: 300px;
+}
+
+table.room-files thead tr th.file-date {
+    width: 150px;
+}
+
+table.room-files thead tr th.file-size {
+    width: 30px;
 }
 /* ----- END webchat original css ----- */

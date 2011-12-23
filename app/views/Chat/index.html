@@ -3,6 +3,7 @@
 #{set 'moreScripts'}
     #{script 'jquery.tmpl.min.js' /}
     #{script 'jquery.tablesorter.min.js' /}
+    #{script 'bootstrap-tabs.js' /}
     #{script 'dateformat.js' /}
     #{script 'badger.min.js' /}
     #{script 'webchat.js' /}
@@ -33,35 +34,91 @@
                 <div class="span10">
                     <h2 id="room-name-${room.id}">${room.name}</h2>
                     <p>Owner: ${room.owner}</p>
-                    <hr />
-                    <div class="new_message_area">
-                        <div class="send_message">
-                            <textarea id="room-${room.id}-text" class="new_message xxlarge" placeholder="Write New Message Here! Shift+Enter" rows="3"></textarea><br />
-                            <a class="send btn success" href="#">Send</a>
-                        </div>
+
+                    <div class="room-contents-tabs">
+                        <ul class="tabs" data-tabs="tabs">
+                            <li class="active"><a href="#room-contents-messages-${room.id}">Messages</a></li>
+                            <li><a href="#room-contents-files-${room.id}">Files</a></li>
+                            <li><a href="#room-contents-important-${room.id}">Important</a></li>
+                            <li><a href="#room-contents-search-${room.id}">Search</a></li>
+                            <li><a href="#room-contents-sent-${room.id}">Sent</a></li>
+                        </ul>
                     </div>
-                    <br />
-                    <div id="messages-room-${room.id}">
-                        #{list items:room.messages, as:'message' }
-                        <div id="message-id-${message.id}" class="chat_msg row">
-                            <div class="msg_container row">
-                                <div class="span1">
-                                    <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
-                                </div>
-                                <div class="span9">
-                                    <div class="arrow"></div>
-                                    <div class="msg_body">
-                                        <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
-                                        <div class="msg_date"><span>${message.sentAt}</span></div>
-                                        <div class="msg_text"><pre>${message.message}</pre></div>
-                                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane room-contents-body-messages active" id="room-contents-messages-${room.id}">
+                            <div class="new_message_area">
+                                <div class="send_message">
+                                    <textarea id="room-${room.id}-text" class="new_message xxlarge" placeholder="Write New Message Here! Shift+Enter" rows="3"></textarea><br />
+                                    <a class="send btn success" href="#">Send</a>
                                 </div>
                             </div>
+                            <br />
+                            <div id="messages-room-${room.id}">
+                                #{list items:room.messages, as:'message' }
+                                <div id="message-id-${message.id}" class="chat_msg row">
+                                    <div class="msg_container row">
+                                        <div class="span1">
+                                            <div class="msg_avatar"><img src="@{Users.avatar(message.who.name)}"></div>
+                                        </div>
+                                        <div class="span9">
+                                            <div class="arrow"></div>
+                                            <div class="msg_body">
+                                                <div class="msg_user"><span>${message.who.name} (${message.who.fullname})</span></div>
+                                                <div class="msg_date"><span>${message.sentAt}</span></div>
+                                                <div class="msg_text"><pre>${message.message}</pre></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                #{/list}
+                            </div>
+                            <hr />
+                            <a class="btn read-more-messages">Read More</a>
                         </div>
-                        #{/list}
+                        <div class="tab-pane room-contents-body-files" id="room-contents-files-${room.id}">
+                            <div id="room-${room.id}-upload">
+                                #{form @RoomFiles.upload(room.id), enctype:'multipart/form-data'}
+                                <input type="file" name="upload">
+                                <input class="btn" type="submit" value="Upload">
+                                #{/form}
+                            </div>
+                            <div id="room-${room.id}-files">
+                                <table class="room-files zebra-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="file-name">name</th>
+                                            <th class="file-date">date</th>
+                                            <th class="file-size">size</th>
+                                            <th class="file-action">action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        #{list items:room.files, as:'file' }
+                                        <tr id="file-id-${file.id}">
+                                            <th>${file.name}</th>
+                                            <th>${file.uploadedAt}</th>
+                                            <th>${file.getReadableSize()}</th>
+                                            <th>
+                                                <a href="@{RoomFiles.download(file.id)}" target="_blank"><img src="@{'/public/images/icons/arrow-down.png'}" width="15" height="15" title="download" /></a>
+                                                <a href="@{RoomFiles.rm(file.id)}"><img src="@{'/public/images/icons/trash.png'}" width="15" height="15" title="delete" /></a>
+                                            </th>
+                                        </tr>
+                                        #{/list}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane room-contents-important" id="room-contents-important-${room.id}">
+                            TODO ユーザに関連するメッセージを表示する.
+                            ユーザに関連するかどうかはどうやって判断する？？？
+                        </div>
+                        <div class="tab-pane room-contents-search" id="room-contents-search-${room.id}">
+                            TODO ルームのメッセージを検索し表示する
+                        </div>
+                        <div class="tab-pane room-contents-sent" id="room-contents-sent-${room.id}">
+                            TODO ユーザが送信したメッセージを表示する.
+                        </div>
                     </div>
-                    <hr />
-                    <a class="btn read-more-messages">Read More</a>
                 </div>
 
                 <div class="span6 members">
@@ -76,38 +133,16 @@
                     </div>
                 </div>
                 <div class="span6">
-                    <h3>Files</h3>
-                    <div id="room-${room.id}-upload">
-                        #{form @RoomFiles.upload(room.id), enctype:'multipart/form-data'}
-                        <input type="file" name="upload">
-                        <input class="btn" type="submit" value="Upload">
-                        #{/form}
-                    </div>
-                    <div id="room-${room.id}-files">
-                        <table class="room-files zebra-striped">
-                            <thead>
-                                <tr>
-                                    <th>name</th>
-                                    <th>date</th>
-                                    <th>size</th>
-                                    <th>action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                #{list items:room.files, as:'file' }
-                                <tr id="file-id-${file.id}">
-                                    <th>${file.name}</th>
-                                    <th>${file.uploadedAt}</th>
-                                    <th>${file.getReadableSize()}</th>
-                                    <th>
-                                        <a href="@{RoomFiles.download(file.id)}" target="_blank"><img src="@{'/public/images/icons/arrow-down.png'}" width="15" height="15" title="download" /></a>
-                                        <a href="@{RoomFiles.rm(file.id)}"><img src="@{'/public/images/icons/trash.png'}" width="15" height="15" title="delete" /></a>
-                                    </th>
-                                </tr>
-                                #{/list}
-                            </tbody>
-                        </table>
-                    </div>
+                    <h3>Infomation(仮)</h3>
+                    <pre>ルームのちょっとした情報をメモするスペース
+=== 周知事項 ===
+* 飲み会
+ * 20XX/XX/XX 月島 海鮮もんじゃ
+=== スケジュール ===
+=== 不在予定 ===
+* 田中の不在予定
+  * 20XX/XX/XX 研修のため不在
+                    </pre>
                 </div>
             </div>
         </div>
@@ -158,6 +193,7 @@ $(function () {
     chat.setupReadMore(readMoreURL);
     // Create sortable table for RoomFiles.
     $(".room-files").tablesorter();
+    $('.tabs').tabs();
 });
 
 </script>
